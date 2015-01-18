@@ -1,0 +1,25 @@
+{
+  "name": "johnie/plugin-boilerplate",
+  "type": "wordpress-plugin",
+  "licence": "MIT",
+  "description": "",
+  "homepage": "https://github.com/johnie/plugin-boilerplate",
+  "authors": [
+    {
+      "name": "Johnie Hjelm",
+      "email": "johniehjelm@me.com",
+      "homepage": "https://github.com/johnie"
+    }
+  ],
+  "keywords": [
+    "wordpress",
+    "plugin"
+  ],
+  "support": {
+    "issues": "https://github.com/johnie/plugin-boilerplate/issues"
+  },
+  "require": {
+    "php": ">=5.3.0",
+    "composer/installers": "~1.0"
+  }
+}
