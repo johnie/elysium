@@ -1,7 +1,7 @@
 <?php
 /*
 * Plugin Name: Plugin Name
-* Plugin URI: https://github.com/johnie/repo
+* Plugin URI: https://github.com/johnie/plugin-boilerplate
 * Description:
 * Version: 0.0.1
 * Author: Johnie Hjelm
