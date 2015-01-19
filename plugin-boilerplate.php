@@ -37,10 +37,6 @@ if ( ! defined( 'ABSPATH' ) ) {
   exit;
 }
 
-// Require Michelf Markdown
-require_once 'Michelf/Markdown.inc.php';
-use \Michelf\Markdown;
-
 if ( ! class_exists( 'PluginName' ) ) {
 
   class PluginName {
