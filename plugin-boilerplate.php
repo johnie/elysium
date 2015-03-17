@@ -109,7 +109,7 @@ if ( ! class_exists( 'PluginName' ) ) {
     private function setup_globals() {
       $this->tag = 'pluginname';
       $this->name = 'Plugin Name';
-      $this->description = 'Simple WordPress plugin description"';
+      $this->description = 'Simple WordPress plugin description';
       $this->version = '1.0.0';
     }
 
