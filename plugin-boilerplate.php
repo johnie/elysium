@@ -39,38 +39,88 @@ if ( ! class_exists( 'PluginName' ) ) {
 
   class PluginName {
 
-    /**
-    * Tag identifier used by file includes and selector attributes.
-    * @var string
-    */
-    protected $tag = 'pluginname';
+    private static $instance;
 
     /**
-    * User friendly name used to identify the plugin.
-    * @var string
-    */
-    protected $name = 'Plugin Name';
+     * Tag identifier used by file includes and selector attributes.
+     * @var string
+     */
+
+    public $tag;
 
     /**
-    * Current version of the plugin.
-    * @var string
-    */
-    protected $version = '0.0.1';
+     * User friendly name used to identify the plugin.
+     * @var string
+     */
+
+    public $name;
 
     /**
-    * Initiate the plugin by setting the default values and assigning any
-    * required actions and filters.
-    *
-    * @access public
-    */
-    function __construct() {
+     * Description of the plugin.
+     * @var string
+     */
+
+    public $description;
+
+    /**
+     * Current version of the plugin.
+     * @var string
+     */
+
+    public $version;
+
+    /**
+     * Plugin loader instance.
+     *
+     * @since 1.0.0
+     *
+     * @return object
+     */
+
+    public static function instance() {
+      if ( ! isset( self::$instance ) ) {
+        self::$instance = new static;
+        self::$instance->setup_globals();
+        self::$instance->setup_actions();
+      }
+
+      return self::$instance;
+    }
+
+    /**
+     * Initiate the plugin by setting the default values and assigning any
+     * required actions and filters.
+     *
+     * @access private
+     */
+
+    private function setup_actions() {
 
 
 
     }
 
+    /**
+ 		 * Initiate the globals
+ 		 *
+     * @access private
+ 		 */
+
+    private function setup_globals() {
+      $this->tag = 'pluginname';
+      $this->name = 'Plugin Name';
+      $this->description = 'Simple WordPress plugin description"';
+      $this->version = '1.0.0';
+    }
+
   }
 
-  new PluginName();
-
 }
+
+if ( !function_exists( 'pluginname' ) ) {
+  function pluginname() {
+    return PluginName::instance();
+  }
+}
+
+add_action( 'plugins_loaded', 'pluginname' );
