@@ -1,11 +1,11 @@
-# plugin-boilerplate
+# Elysium
 
-> Text about the plugin
+> Simple Membership plugin
 
 ## Install
 
 ```sh
-$ composer require johnie/plugin-boilerplate
+$ composer require johnie/elysium
 ```
 
 ## Usage
