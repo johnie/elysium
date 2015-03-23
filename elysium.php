@@ -29,7 +29,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
 */
 
 // Exit if accessed directly.
@@ -97,7 +96,7 @@ if ( ! class_exists( 'Elysium' ) ) {
     private function setup_actions() {
 
     	if ( is_admin() ):
-    		add_filter( 'enter_title_here', array( $this, 'change_elysium_title' ) );
+    		add_filter( 'enter_title_here', 'change_elysium_title' );
 				add_action( 'admin_enqueue_scripts', 'register_admin_scripts' );
     	endif;
 
@@ -158,7 +157,7 @@ if ( ! class_exists( 'Elysium' ) ) {
 		$screen = get_current_screen();
 
 		if ( 'elysium' == $screen->post_type ) {
-			$title = __('För- och efternamn', 'elysium');
+			return $title = __('För- och efternamn', 'elysium');
 		}
 
 		return $title;
