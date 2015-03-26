@@ -96,11 +96,11 @@ if ( ! class_exists( 'Elysium' ) ) {
     private function setup_actions() {
 
     	if ( is_admin() ):
-    		add_filter( 'enter_title_here', 'change_elysium_title' );
-				add_action( 'admin_enqueue_scripts', 'register_admin_scripts' );
+    		add_filter( 'enter_title_here', array( $this, 'change_elysium_title' ) );
+				add_action( 'admin_enqueue_scripts', array( $this, 'register_admin_scripts' ) );
     	endif;
 
-			add_action( 'wp_enqueue_scripts', 'register_elysium_assets', 30 );
+			add_action( 'wp_enqueue_scripts', array( $this, 'register_elysium_assets' ), 30 );
       add_action( 'init', array( $this, '_elysium_post_type'), 0 );
 
     }
@@ -145,41 +145,59 @@ if ( ! class_exists( 'Elysium' ) ) {
         'supports'            => array( 'title' ),
         'capability_type'     => 'post'
       ) );
- 		}
+  	}
 
-  }
+	  /**
+		 * Change elysium post type title placeholder
+		 */
 
-  /**
-	 * Change elysium post type title placeholder
-	 */
+		function change_elysium_title( $title ) {
+			$screen = get_current_screen();
 
-	function change_elysium_title( $title ) {
-		$screen = get_current_screen();
+			if ( 'elysium' == $screen->post_type ) {
+				return $title = __('För- och efternamn', 'elysium');
+			}
 
-		if ( 'elysium' == $screen->post_type ) {
-			return $title = __('För- och efternamn', 'elysium');
+			return $title;
 		}
 
-		return $title;
-	}
+		/**
+		 * Elysium assets
+		 */
 
-	/**
-	 * Elysium assets
-	 */
+		function register_elysium_assets() {
+			wp_enqueue_script( 'elysium_js', home_url() . '/lib/elysium/assets/js/elysium.js', array(), null );
+		}
 
-	function register_elysium_assets() {
-		wp_enqueue_script( 'elysium_js', home_url() . '/lib/elysium/assets/js/elysium.js', array(), null );
-	}
+		/**
+		 * Admin scripts
+		 */
 
-	/**
-	 * Admin scripts
-	 */
+		function register_admin_scripts() {
+			wp_enqueue_script( 'lockdown_js', home_url() . '/lib/elysium/assets/js/lockdown.js', array(), null );
+		}
 
-	function register_admin_scripts() {
-		wp_enqueue_script( 'lockdown_js', home_url() . '/lib/elysium/assets/js/lockdown.js', array(), null );
+
+	  /**
+	   * Markup for elysium
+	   */
+
+	  public function render() {
+	    include_once dirname( __FILE__ ) . '/inc/form.php';
+	  }
+
 	}
 
 }
+
+
+/**
+ * Function for elysium
+ */
+function elysium_render() {
+  elysium()->render();
+}
+
 
 if ( !function_exists( 'elysium' ) ) {
   function elysium() {
