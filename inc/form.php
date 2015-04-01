@@ -1,4 +1,4 @@
-<form action="" id="elysium" method="post">
+<form action="" id="elysium" method="POST">
 	<fieldset>
 		<legend><?php _e("Personnummer", "elysium"); ?> <span class="asterisk">*</span></legend>
 		<input type="text" name="personnr" id="personnr" class="required">
