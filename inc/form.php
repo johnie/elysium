@@ -22,13 +22,35 @@
 		);
 
 		$mid = wp_insert_post( $new_member );
+
+		if( isset( $_POST['elysium_personnr'] ) ) {
+      update_post_meta( $mid, '_elysium_personnr', esc_attr( $_POST['elysium_personnr'] ) );
+    }
+		if( isset( $_POST['elysium_gatuadress'] ) ) {
+      update_post_meta( $mid, '_elysium_gatuadress', esc_attr( $_POST['elysium_gatuadress'] ) );
+    }
+		if( isset( $_POST['elysium_stad'] ) ) {
+      update_post_meta( $mid, '_elysium_stad', esc_attr( $_POST['elysium_stad'] ) );
+    }
+		if( isset( $_POST['elysium_postnr'] ) ) {
+      update_post_meta( $mid, '_elysium_postnr', esc_attr( $_POST['elysium_postnr'] ) );
+    }
+		if( isset( $_POST['elysium_mobiltelefon'] ) ) {
+      update_post_meta( $mid, '_elysium_mobiltelefon', esc_attr( $_POST['elysium_mobiltelefon'] ) );
+    }
+		if( isset( $_POST['elysium_hemtelefon'] ) ) {
+      update_post_meta( $mid, '_elysium_hemtelefon', esc_attr( $_POST['elysium_hemtelefon'] ) );
+    }
+		if( isset( $_POST['elysium_epost'] ) ) {
+      update_post_meta( $mid, '_elysium_epost', esc_attr( $_POST['elysium_epost'] ) );
+    }
 	}
 ?>
 
 <form action="" id="elysium" method="POST">
 	<fieldset>
 		<legend><?php _e("Personnummer", "elysium"); ?> <span class="asterisk">*</span></legend>
-		<input type="text" name="personnr" id="personnr" class="required">
+		<input type="text" name="elysium_personnr" id="personnr" class="required">
 		<label for="personnr"><?php _e("Ange ditt personnummer [ÅÅMMDD-1234]", "elysium"); ?></label>
 	</fieldset>
 	<fieldset>
@@ -43,22 +65,22 @@
 	</fieldset>
 	<fieldset>
 		<legend><?php _e("Adress", "elysium"); ?> <span class="asterisk">*</span></legend>
-		<input type="text" name="gatuadress" id="gatuadress" class="required">
+		<input type="text" name="elysium_gatuadress" id="gatuadress" class="required">
 		<label for="gatuadress"><?php _e("Gatuadress", "elysium"); ?></label>
-		<input type="text" name="stad" id="stad" class="required">
+		<input type="text" name="elysium_stad" id="stad" class="required">
 		<label for="stad"><?php _e("Stad", "elysium"); ?></label>
-		<input type="text" name="postnr" id="postnr" class="required">
+		<input type="text" name="elysium_postnr" id="postnr" class="required">
 		<label for="postnr"><?php _e("Postnr", "elysium"); ?></label>
 	</fieldset>
 	<fieldset>
 		<legend><?php _e("Kontakt", "elysium"); ?></legend>
-		<input type="text" name="mobiltelefon" id="mobiltelefon">
+		<input type="text" name="elysium_mobiltelefon" id="mobiltelefon">
 		<label for="mobiltelefon"><?php _e("Mobiltelefon", "elysium"); ?></label>
-		<input type="email" name="hemtelefon" id="hemtelefon">
+		<input type="text" name="elysium_hemtelefon" id="hemtelefon">
 		<label for="hemtelefon"><?php _e("Hemtelefon", "elysium"); ?></label>
-		<input type="email" name="epost" id="epost">
+		<input type="email" name="elysium_epost" id="epost">
 		<label for="epost"><?php _e("E-post", "elysium"); ?></label>
-		<input type="email" name="epost2" id="epost2">
+		<input type="email" name="elysium_epost2" id="epost2">
 		<label for="epost2"><?php _e("Bekräfta E-post", "elysium"); ?></label>
 	</fieldset>
 	<fieldset>

@@ -97,6 +97,12 @@ if ( ! class_exists( 'Elysium' ) ) {
 
     	if ( is_admin() ):
     		add_action( 'admin_init', array( $this, '_elysium_meta_data' ) );
+
+    		add_filter( 'manage_edit-elysium_columns', array( $this, 'add_table_columns' ) );
+    		add_action( 'manage_elysium_posts_custom_column', array( $this, 'output_table_columns_data'), 10, 2 );
+    		add_filter( 'manage_edit-elysium_sortable_columns', array( $this, 'define_sortable_table_columns') );
+    		add_filter( 'request', array( $this, 'orderby_sortable_table_columns' ) );
+
     		add_filter( 'enter_title_here', array( $this, 'change_elysium_title' ) );
 				add_action( 'admin_enqueue_scripts', array( $this, 'register_admin_scripts' ) );
     	endif;
@@ -196,7 +202,7 @@ if ( ! class_exists( 'Elysium' ) ) {
 							<input type="text" name="elysium_stad" value="<?php echo $stad; ?>" placeholder="Farsta">
 						</p>
 						<p>
-							<label for="elysium_postnr">postnr</label><br>
+							<label for="elysium_postnr">Postnr</label><br>
 							<input type="text" name="elysium_postnr" value="<?php echo $postnr; ?>" placeholder="12347">
 						</p>
 					</div>
@@ -252,6 +258,72 @@ if ( ! class_exists( 'Elysium' ) ) {
         update_post_meta( $post_id, '_elysium_epost', esc_attr( $_POST['elysium_epost'] ) );
       }
  		}
+
+
+ 		/**
+ 		 * Add table columns for elysium
+ 		 */
+
+ 		function add_table_columns( $columns ) {
+ 			$columns['_elysium_epost'] = __( 'E-post', 'elysium' );
+ 			$columns['_elysium_mobiltelefon'] = __( 'Mobiltelefon', 'elysium' );
+ 			$columns['_elysium_gatuadress'] = __( 'Adress', 'elysium' );
+
+ 			return $columns;
+ 		}
+
+
+ 		/**
+ 		 * Outputs data from medlem
+ 		 */
+
+ 		function output_table_columns_data( $columnName, $post_id ) {
+    	$field = get_post_meta( $post_id, $columnName, true );
+
+    	if ( '_elysium_gatuadress' == $columnName ) {
+    		echo get_post_meta( $post_id, '_elysium_gatuadress', true ) . ', ' . get_post_meta( $post_id, '_elysium_postnr', true ) . ' ' . get_post_meta( $post_id, '_elysium_stad', true );
+    	} else {
+    		echo $field;
+    	}
+		}
+
+
+ 		/**
+ 		 * Sortable columns
+ 		 */
+
+ 		function define_sortable_table_columns( $columns ) {
+	    $columns['_elysium_epost'] = '_elysium_epost';
+	    $columns['_elysium_mobiltelefon'] = '_elysium_mobiltelefon';
+
+	    return $columns;
+		}
+
+
+ 		/**
+ 		 * Orderby request columns
+ 		 */
+
+		function orderby_sortable_table_columns( $vars ) {
+	    // Don't do anything if we are not on the Contact Custom Post Type
+	    if ( 'elysium' != $vars['post_type'] ) return $vars;
+
+	    // Don't do anything if no orderby parameter is set
+	    if ( ! isset( $vars['orderby'] ) ) return $vars;
+
+	    // Check if the orderby parameter matches one of our sortable columns
+	    if ( $vars['orderby'] == '_elysium_epost' OR
+        $vars['orderby'] == '_elysium_mobiltelefon' ) {
+        // Add orderby meta_value and meta_key parameters to the query
+        $vars = array_merge( $vars, array(
+            'meta_key' => $vars['orderby'],
+            'orderby' => 'meta_value',
+        ));
+	    }
+
+	    return $vars;
+		}
+
 
 	  /**
 		 * Change elysium post type title placeholder
