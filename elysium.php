@@ -96,6 +96,7 @@ if ( ! class_exists( 'Elysium' ) ) {
     private function setup_actions() {
 
     	if ( is_admin() ):
+    		add_action( 'admin_init', array( $this, '_elysium_meta_data' ) );
     		add_filter( 'enter_title_here', array( $this, 'change_elysium_title' ) );
 				add_action( 'admin_enqueue_scripts', array( $this, 'register_admin_scripts' ) );
     	endif;
@@ -146,6 +147,111 @@ if ( ! class_exists( 'Elysium' ) ) {
         'capability_type'     => 'post'
       ) );
   	}
+
+
+		/**
+ 		 * Markup for meta boxes
+ 		 */
+
+		function _elysium_meta_data() {
+			add_meta_box( 'elysium_type',
+				'Medlem Information',
+				array( $this, 'display_elysium_type' ),
+				'elysium', 'normal', 'high'
+			);
+		}
+
+
+  	/**
+ 		 * Markup for meta boxes
+ 		 */
+
+ 		function display_elysium_type( $post ) {
+ 			$values 		= get_post_custom( $post->ID );
+ 			$personnr 	= get_post_meta( $post->ID, '_elysium_personnr', true );
+ 			$gatuadress = get_post_meta( $post->ID, '_elysium_gatuadress', true );
+ 			$stad 		  = get_post_meta( $post->ID, '_elysium_stad', true );
+ 			$postnr 	  = get_post_meta( $post->ID, '_elysium_postnr', true );
+ 			$mobiltlf	  = get_post_meta( $post->ID, '_elysium_mobiltelefon', true );
+ 			$hemtlf 	  = get_post_meta( $post->ID, '_elysium_hemtelefon', true );
+ 			$epost  	  = get_post_meta( $post->ID, '_elysium_epost', true );
+ 			wp_nonce_field( 'elysium_meta_box_nonce', '_elysium_nonce' );
+ 			?>
+				<div id="medlem-data">
+					<div class="inside">
+						<h3 style="padding-left: 0;">Personnummer</h3>
+						<p>
+							<label for="elysium_personnr">Personnummer</label><br>
+							<input type="text" name="elysium_personnr" value="<?php echo $personnr; ?>" placeholder="ÅÅMMDD-1234">
+						</p>
+					</div>
+					<div class="inside">
+						<h3 style="padding-left: 0;">Address</h3>
+						<p>
+							<label for="elysium_gatuadress">Gatuadress</label><br>
+							<input type="text" name="elysium_gatuadress" value="<?php echo $gatuadress; ?>" placeholder="Storforsplan 44">
+						</p>
+						<p>
+							<label for="elysium_stad">Stad</label><br>
+							<input type="text" name="elysium_stad" value="<?php echo $stad; ?>" placeholder="Farsta">
+						</p>
+						<p>
+							<label for="elysium_postnr">postnr</label><br>
+							<input type="text" name="elysium_postnr" value="<?php echo $postnr; ?>" placeholder="12347">
+						</p>
+					</div>
+					<div class="inside">
+						<h3 style="padding-left: 0;">Kontakt</h3>
+						<p>
+							<label for="elysium_mobiltelefon">Mobiltelefon</label><br>
+							<input type="text" name="elysium_mobiltelefon" value="<?php echo $mobiltlf; ?>" placeholder="070-999 13 37">
+						</p>
+						<p>
+							<label for="elysium_hemtelefon">Hemtelefon</label><br>
+							<input type="text" name="elysium_hemtelefon" value="<?php echo $hemtlf; ?>" placeholder="08 – 685 80 80">
+						</p>
+						<p>
+							<label for="elysium_epost">E-post</label><br>
+							<input type="text" name="elysium_epost" value="<?php echo $epost; ?>" placeholder="namn@gmail.com">
+						</p>
+					</div>
+				</div>
+ 			<?php
+ 		}
+
+
+ 		/**
+ 		 * Save meta box data
+ 		 */
+
+ 		function save_elysium_data( $post_id ) {
+ 			// Bail if we're doing an auto save
+      if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+      // if our nonce isn't there, or we can't verify it, bail
+      if( !isset( $_POST['_elysium_nonce'] ) || !wp_verify_nonce( $_POST['_elysium_nonce'], 'elysium_meta_box_nonce' ) ) return;
+
+      if( isset( $_POST['elysium_personnr'] ) ) {
+        update_post_meta( $post_id, '_elysium_personnr', esc_attr( $_POST['elysium_personnr'] ) );
+      }
+      if( isset( $_POST['elysium_gatuadress'] ) ) {
+        update_post_meta( $post_id, '_elysium_gatuadress', esc_attr( $_POST['elysium_gatuadress'] ) );
+      }
+      if( isset( $_POST['elysium_stad'] ) ) {
+        update_post_meta( $post_id, '_elysium_stad', esc_attr( $_POST['elysium_stad'] ) );
+      }
+      if( isset( $_POST['elysium_postnr'] ) ) {
+        update_post_meta( $post_id, '_elysium_postnr', esc_attr( $_POST['elysium_postnr'] ) );
+      }
+      if( isset( $_POST['elysium_mobiltelefon'] ) ) {
+        update_post_meta( $post_id, '_elysium_mobiltelefon', esc_attr( $_POST['elysium_mobiltelefon'] ) );
+      }
+      if( isset( $_POST['elysium_hemtelefon'] ) ) {
+        update_post_meta( $post_id, '_elysium_hemtelefon', esc_attr( $_POST['elysium_hemtelefon'] ) );
+      }
+      if( isset( $_POST['elysium_epost'] ) ) {
+        update_post_meta( $post_id, '_elysium_epost', esc_attr( $_POST['elysium_epost'] ) );
+      }
+ 		}
 
 	  /**
 		 * Change elysium post type title placeholder

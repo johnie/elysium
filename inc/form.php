@@ -1,3 +1,30 @@
+<?php
+	$hasError = false;
+	$nameError = '';
+
+	if ( isset( $_POST['submitted'] ) ) {
+		if ( trim( $_POST['fornamn'] ) === '' ) {
+			$nameError = 'Vänligen fyll i ditt förnamn';
+			$hasError = true;
+		}
+		if ( trim( $_POST['efternamn'] ) === '' ) {
+			$nameError = 'Vänligen fyll i ditt efternamn';
+			$hasError = true;
+		}
+
+		$name = $_POST['fornamn'] . ' ' . $_POST['efternamn'];
+		$post_type = elysium()->tag;
+
+		$new_member = array(
+			'post_title' => wp_strip_all_tags( $name ),
+			'post_status' => 'private',
+			'post_type' => $post_type
+		);
+
+		$mid = wp_insert_post( $new_member );
+	}
+?>
+
 <form action="" id="elysium" method="POST">
 	<fieldset>
 		<legend><?php _e("Personnummer", "elysium"); ?> <span class="asterisk">*</span></legend>
@@ -10,6 +37,9 @@
 		<label for="fornamn"><?php _e("Förnamn", "elysium"); ?></label>
 		<input type="text" name="efternamn" id="efternamn" class="required">
 		<label for="fornamn"><?php _e("Efternamn", "elysium"); ?></label>
+		<?php if ( $nameError != ''): ?>
+			<span class="error"><?php echo $nameError; ?></span>
+		<?php endif; ?>
 	</fieldset>
 	<fieldset>
 		<legend><?php _e("Adress", "elysium"); ?> <span class="asterisk">*</span></legend>
