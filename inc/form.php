@@ -1,15 +1,16 @@
 <?php
 	$hasError = false;
-	$nameError = '';
+	$forNameError = '';
+	$efterNameError = '';
 
-	if ( isset( $_POST['submitted'] ) ) {
+	if ( isset( $_POST['submitted'] ) && isset( $_POST['post_nonce_field'] ) && wp_verify_nonce( $_POST['post_nonce_field'], 'post_nonce' ) ) {
 		if ( trim( $_POST['fornamn'] ) === '' ) {
-			$nameError = 'Vänligen fyll i ditt förnamn';
+			$forNameError = 'Vänligen fyll i ditt förnamn';
 			$hasError = true;
 		}
 		if ( trim( $_POST['efternamn'] ) === '' ) {
-			$nameError = 'Vänligen fyll i ditt efternamn';
-			$hasError = true;
+			$efterNameError = 'Vänligen fyll i ditt efternamn';
+			$hasError§ = true;
 		}
 
 		$name = $_POST['fornamn'] . ' ' . $_POST['efternamn'];
@@ -57,10 +58,13 @@
 		<legend><?php _e("Namn", "elysium"); ?> <span class="asterisk">*</span></legend>
 		<input type="text" name="fornamn" id="fornamn" class="required">
 		<label for="fornamn"><?php _e("Förnamn", "elysium"); ?></label>
+		<?php if ( $forNameError != ''): ?>
+			<span class="error"><?php echo $forNameError; ?></span>
+		<?php endif; ?>
 		<input type="text" name="efternamn" id="efternamn" class="required">
 		<label for="fornamn"><?php _e("Efternamn", "elysium"); ?></label>
-		<?php if ( $nameError != ''): ?>
-			<span class="error"><?php echo $nameError; ?></span>
+		<?php if ( $efterNameError != ''): ?>
+			<span class="error"><?php echo $efterNameError; ?></span>
 		<?php endif; ?>
 	</fieldset>
 	<fieldset>
@@ -86,5 +90,6 @@
 	<fieldset>
 		<input type="hidden" name="submitted" id="submitted" value="true" />
 		<button type="submit"><?php _e("Bli medlem nu", "elysium"); ?></button>
+		<?php wp_nonce_field( 'post_nonce', 'post_nonce_field' ); ?>
 	</fieldset>
 </form>

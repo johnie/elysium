@@ -142,10 +142,10 @@ if ( ! class_exists( 'Elysium' ) ) {
           'not_found'           => __( 'Vi hittade ingen medlem', 'elysium' ),
           'not_found_in_trash'  => __( 'Vi hittade ingen medlem i soptunnan', 'elysium' )
         ),
-        'public'              => false,
+        'public'              => true,
         'show_ui'             => true,
         'show_in_nav_menus'   => true,
-        'publicly_queryable'  => false,
+        'publicly_queryable'  => true,
         'exclude_from_search' => true,
         'menu_icon'   				=> 'dashicons-id',
         'rewrite'             => array('slug' => 'medlemmar'),
@@ -181,6 +181,7 @@ if ( ! class_exists( 'Elysium' ) ) {
  			$mobiltlf	  = get_post_meta( $post->ID, '_elysium_mobiltelefon', true );
  			$hemtlf 	  = get_post_meta( $post->ID, '_elysium_hemtelefon', true );
  			$epost  	  = get_post_meta( $post->ID, '_elysium_epost', true );
+ 			$dhr 			  = get_post_meta( $post->ID, '_elysium_dhr_medlem', true );
  			wp_nonce_field( 'elysium_meta_box_nonce', '_elysium_nonce' );
  			?>
 				<div id="medlem-data">
@@ -221,6 +222,14 @@ if ( ! class_exists( 'Elysium' ) ) {
 							<input type="text" name="elysium_epost" value="<?php echo $epost; ?>" placeholder="namn@gmail.com">
 						</p>
 					</div>
+					<div class="inside">
+						<h3 style="padding-left: 0;">Medlem i DHR?</h3>
+						<p>
+							<input type="hidden" name="elysium_dhr_medlem" value="<?php echo $dhr; ?>" />
+							<input type="checkbox" name="elysium_dhr_medlem" <?php if( $dhr == true ) { ?>checked="checked"<?php } ?> />
+							<?php var_dump($dhr); ?>
+						</p>
+					</div>
 				</div>
  			<?php
  		}
@@ -256,6 +265,9 @@ if ( ! class_exists( 'Elysium' ) ) {
       }
       if( isset( $_POST['elysium_epost'] ) ) {
         update_post_meta( $post_id, '_elysium_epost', esc_attr( $_POST['elysium_epost'] ) );
+      }
+      if( isset( $_POST['elysium_dhr_medlem'] ) ) {
+        update_post_meta( $post_id, '_elysium_dhr_medlem', esc_attr( $_POST['elysium_dhr_medlem'] ) );
       }
  		}
 
