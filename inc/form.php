@@ -3,7 +3,12 @@
 	$forNameError = '';
 	$efterNameError = '';
 
-	if ( isset( $_POST['submitted'] ) && isset( $_POST['post_nonce_field'] ) && wp_verify_nonce( $_POST['post_nonce_field'], 'post_nonce' ) ) {
+	if (
+		isset( $_POST['submitted'] ) &&
+		isset( $_POST['post_nonce_field'] ) &&
+		wp_verify_nonce( $_POST['post_nonce_field'], 'post_nonce' ) &&
+		elysium()->personnr_exist('elysium_personnr')
+	) {
 		if ( trim( $_POST['fornamn'] ) === '' ) {
 			$forNameError = 'Vänligen fyll i ditt förnamn';
 			$hasError = true;
@@ -123,7 +128,7 @@
 	</fieldset>
 	<fieldset>
 		<input type="hidden" name="submitted" id="submitted" value="true" />
-		<button type="submit" class="button--wayra"><?php _e("Bli medlem nu", "elysium"); ?></button>
+		<button type="submit" class="button--wayra" id="elysium_submit"><?php _e("Bli medlem nu", "elysium"); ?></button>
 		<?php wp_nonce_field( 'post_nonce', 'post_nonce_field' ); ?>
 	</fieldset>
 </form>

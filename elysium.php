@@ -356,7 +356,7 @@ if ( ! class_exists( 'Elysium' ) ) {
 		 */
 
 		function register_elysium_assets() {
-			wp_enqueue_script( 'elysium_js', home_url() . '/lib/elysium/assets/js/elysium.js', array(), null );
+			wp_enqueue_script( 'elysium_js', home_url() . '/lib/elysium/assets/js/elysium.js', array(), null, true );
 		}
 
 		/**
@@ -375,6 +375,27 @@ if ( ! class_exists( 'Elysium' ) ) {
 	  public function render() {
 	    include_once dirname( __FILE__ ) . '/inc/form.php';
 	  }
+
+
+	  /**
+ 		 * Return if personnr exist
+ 		 * @return boolean
+ 		 */
+
+ 		public function personnr_exist($param) {
+ 			global $wpdb;
+	    $personnr = $wpdb->get_col( $wpdb->prepare( "
+	      SELECT DISTINCT pm.meta_value FROM {$wpdb->postmeta} pm
+	      LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+	      WHERE pm.meta_key = '%s'
+	      AND p.post_status = '%s'
+	      AND p.post_type = '%s'
+	      ", '_elysium_personnr', 'private', 'elysium' ) );
+
+	    if ( isset( $_POST[$param] ) ) {
+	    	return !in_array($_POST[$param], $personnr);
+	    }
+ 		}
 
 	}
 
