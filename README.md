@@ -7,10 +7,12 @@
 ```sh
 $ composer require johnie/elysium
 ```
+## Roadmap
 
-## Usage
-
-Text about how to use the plugin
+* Add template for sending email
+* Better php condionals for the form
+* Send checkbox data
+* Export members data to csv
 
 ## License
 
