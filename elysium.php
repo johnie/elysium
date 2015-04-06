@@ -105,6 +105,8 @@ if ( ! class_exists( 'Elysium' ) ) {
 
     		add_filter( 'enter_title_here', array( $this, 'change_elysium_title' ) );
 				add_action( 'admin_enqueue_scripts', array( $this, 'register_admin_scripts' ) );
+
+				add_action('admin_menu', array( $this, 'elysium_settings_page' ) );
     	endif;
 
 			add_action( 'wp_enqueue_scripts', array( $this, 'register_elysium_assets' ), 30 );
@@ -397,9 +399,68 @@ if ( ! class_exists( 'Elysium' ) ) {
 	    }
  		}
 
+
+ 		/**
+ 	   * Count members
+ 		 */
+
+ 		public function count_members() {
+ 			$membersObj = wp_count_posts($this->tag);
+ 			$total = $membersObj->draft + $membersObj->private;
+
+ 			echo $total;
+ 		}
+
+
+ 		/**
+     * Send mail when creating a member
+ 		 */
+
+ 		public function send_mail($fornamn, $efternamn, $email) {
+ 			$to 		 = elysium_get_plugin_option( 'admin_email' );
+ 			$subject = __("En ny medlem!", "elysium");
+ 			$headers = 'From: '.get_option( 'blogname' ).' <'.get_option( 'admin_email' ).'>' . "\r\n";
+ 			$template = '<table>
+ 				<tbody>
+ 					<tr>
+ 						<td>'.$fornamn.' '.$efternamn.' - '.$email.'</td>
+ 					</tr>
+ 				</tbody>
+ 			</table>';
+
+ 			wp_mail( $to, $subject, $template, $headers);
+ 		}
+
+
+ 		/**
+ 		 * Add settings page
+ 		 */
+
+ 		function elysium_settings_page() {
+			add_submenu_page('options-general.php',
+      'Medlemsregister', 'Medlemsregister', 'manage_options',
+      'elysium', array( $this, 'elysium_settings') );
+ 		}
+
+
+ 		/**
+ 		 * Render settings page
+ 		 */
+
+ 		function elysium_settings() {
+			include_once dirname( __FILE__ ) . '/views/plugin-options.php';
+ 		}
+
 	}
 
 }
+
+
+/**
+ * API
+ */
+
+include_once dirname( __FILE__ ) . '/api.php';
 
 
 /**

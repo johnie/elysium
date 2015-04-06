@@ -50,6 +50,7 @@
 		if( isset( $_POST['elysium_epost'] ) ) {
       update_post_meta( $mid, '_elysium_epost', esc_attr( $_POST['elysium_epost'] ) );
     }
+    elysium()->send_mail($_POST['fornamn'], $_POST['efternamn'], $_POST['elysium_epost']);
 	}
 ?>
 

@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Save plugin options on post.
-if ( elysium_is_method( 'post' ) ) {
+if ( urh_is_method( 'post' ) ) {
 	_elysium_save_plugin_options();
 }
 
@@ -49,7 +49,7 @@ function _elysium_save_plugin_options() {
 		if ( $_POST[ $key ] === 'on' ) {
 			$data[ $key ] = true;
 		} else {
-			$data[ $key ] = elysium_remove_trailing_quotes( $_POST[ $key ] );
+			$data[ $key ] = urh_remove_trailing_quotes( $_POST[ $key ] );
 		}
 	}
 
