@@ -109,7 +109,7 @@ if ( ! class_exists( 'Elysium' ) ) {
 				add_action('admin_menu', array( $this, 'elysium_settings_page' ) );
     	endif;
 
-			add_action( 'wp_enqueue_scripts', array( $this, 'register_elysium_assets' ), 30 );
+			add_action( 'wp_enqueue_scripts', array( $this, 'register_elysium_assets' ), 110 );
       add_action( 'init', array( $this, '_elysium_post_type'), 0 );
 
     }
@@ -187,51 +187,61 @@ if ( ! class_exists( 'Elysium' ) ) {
  			wp_nonce_field( 'elysium_meta_box_nonce', '_elysium_nonce' );
  			?>
 				<div id="medlem-data">
-					<div class="inside">
-						<h3 style="padding-left: 0;">Personnummer</h3>
-						<p>
-							<label for="elysium_personnr">Personnummer</label><br>
-							<input type="text" name="elysium_personnr" value="<?php echo $personnr; ?>" placeholder="ÅÅMMDD-1234">
-						</p>
-					</div>
-					<div class="inside">
-						<h3 style="padding-left: 0;">Address</h3>
-						<p>
-							<label for="elysium_gatuadress">Gatuadress</label><br>
-							<input type="text" name="elysium_gatuadress" value="<?php echo $gatuadress; ?>" placeholder="Storforsplan 44">
-						</p>
-						<p>
-							<label for="elysium_stad">Stad</label><br>
-							<input type="text" name="elysium_stad" value="<?php echo $stad; ?>" placeholder="Farsta">
-						</p>
-						<p>
-							<label for="elysium_postnr">Postnr</label><br>
-							<input type="text" name="elysium_postnr" value="<?php echo $postnr; ?>" placeholder="12347">
-						</p>
-					</div>
-					<div class="inside">
-						<h3 style="padding-left: 0;">Kontakt</h3>
-						<p>
-							<label for="elysium_mobiltelefon">Mobiltelefon</label><br>
-							<input type="text" name="elysium_mobiltelefon" value="<?php echo $mobiltlf; ?>" placeholder="070-999 13 37">
-						</p>
-						<p>
-							<label for="elysium_hemtelefon">Hemtelefon</label><br>
-							<input type="text" name="elysium_hemtelefon" value="<?php echo $hemtlf; ?>" placeholder="08 – 685 80 80">
-						</p>
-						<p>
-							<label for="elysium_epost">E-post</label><br>
-							<input type="text" name="elysium_epost" value="<?php echo $epost; ?>" placeholder="namn@gmail.com">
-						</p>
-					</div>
-					<div class="inside">
-						<h3 style="padding-left: 0;">Medlem i DHR?</h3>
-						<p>
-							<input type="hidden" name="elysium_dhr_medlem" value="<?php echo $dhr; ?>" />
-							<input type="checkbox" name="elysium_dhr_medlem" <?php if( $dhr == true ) { ?>checked="checked"<?php } ?> />
-							<?php var_dump($dhr); ?>
-						</p>
-					</div>
+					<table class="form-table">
+						<tbody>
+							<tr>
+								<th scope="row">
+									Personnummer
+								</th>
+								<td>
+									<input type="text" name="elysium_personnr" value="<?php echo $personnr; ?>" placeholder="ÅÅMMDD-1234">
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">
+									Adress
+								</th>
+								<td>
+									<label for="elysium_gatuadress">Gatuadress</label><br>
+									<input type="text" name="elysium_gatuadress" value="<?php echo $gatuadress; ?>" placeholder="Storforsplan 44">
+								</td>
+								<td>
+									<label for="elysium_stad">Stad</label><br>
+									<input type="text" name="elysium_stad" value="<?php echo $stad; ?>" placeholder="Farsta">
+								</td>
+								<td>
+									<label for="elysium_postnr">Postnr</label><br>
+									<input type="text" name="elysium_postnr" value="<?php echo $postnr; ?>" placeholder="12347">
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">
+									Kontakt
+								</th>
+								<td>
+									<label for="elysium_mobiltelefon">Mobiltelefon</label><br>
+									<input type="text" name="elysium_mobiltelefon" value="<?php echo $mobiltlf; ?>" placeholder="070-999 13 37">
+								</td>
+								<td>
+									<label for="elysium_hemtelefon">Hemtelefon</label><br>
+									<input type="text" name="elysium_hemtelefon" value="<?php echo $hemtlf; ?>" placeholder="08 – 685 80 80">
+								</td>
+								<td>
+									<label for="elysium_epost">E-post</label><br>
+									<input type="text" name="elysium_epost" value="<?php echo $epost; ?>" placeholder="namn@gmail.com">
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">
+									Medlem i DHR?
+								</th>
+								<td>
+									<input type="hidden" name="elysium_dhr_medlem" value="<?php echo $dhr; ?>" />
+									<input type="checkbox" name="elysium_dhr_medlem" <?php if( $dhr == 'on' ) { ?>checked="checked"<?php } ?> />
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
  			<?php
  		}
@@ -358,7 +368,8 @@ if ( ! class_exists( 'Elysium' ) ) {
 		 */
 
 		function register_elysium_assets() {
-			wp_enqueue_script( 'elysium_js', home_url() . '/lib/elysium/assets/js/elysium.js', array(), null, true );
+			wp_enqueue_script( 'validation', '//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js', array(), null );
+			wp_enqueue_script( 'elysium_js', home_url() . '/lib/elysium/assets/js/elysium.js', array(), null );
 		}
 
 		/**

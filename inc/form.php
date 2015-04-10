@@ -50,6 +50,9 @@
 		if( isset( $_POST['elysium_epost'] ) ) {
       update_post_meta( $mid, '_elysium_epost', esc_attr( $_POST['elysium_epost'] ) );
     }
+    if( isset( $_POST['elysium_dhr_medlem'] ) ) {
+      update_post_meta( $mid, '_elysium_dhr_medlem', esc_attr( 'on' ) );
+    }
     elysium()->send_mail($_POST['fornamn'], $_POST['efternamn'], $_POST['elysium_epost']);
 	}
 ?>
@@ -126,6 +129,12 @@
 				<span class="input__label-content--isao"><?php _e("E-post", "elysium"); ?></span>
 			</label>
 		</div>
+	</fieldset>
+	<fieldset>
+		<label for="elysium_dhr_medlem">
+			<input type="checkbox" name="elysium_dhr_medlem" id="elysium_dhr_medlem">
+			<span class="medlem-checkbox__label">Vill du automatiskt bli medlem i DHR?</span>
+		</label>
 	</fieldset>
 	<fieldset>
 		<input type="hidden" name="submitted" id="submitted" value="true" />
