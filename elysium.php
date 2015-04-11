@@ -109,7 +109,13 @@ if ( ! class_exists( 'Elysium' ) ) {
 				add_action('admin_menu', array( $this, 'elysium_settings_page' ) );
     	endif;
 
-			add_action( 'wp_enqueue_scripts', array( $this, 'register_elysium_assets' ), 110 );
+			add_action( 'wp_dashboard_setup', array( $this, 'elysium_dashboard' ) );
+
+			add_action( 'wp_enqueue_scripts', array( $this, 'register_elysium_assets' ) );
+
+			add_action( 'wp_ajax_elysium_kruger', array( $this, 'elysium_ajax_with_kruger' ) );
+			add_action( 'wp_ajax_nopriv_elysium_kruger', array( $this, 'elysium_ajax_with_kruger' ) );
+
       add_action( 'init', array( $this, '_elysium_post_type'), 0 );
 
     }
@@ -180,6 +186,7 @@ if ( ! class_exists( 'Elysium' ) ) {
  			$gatuadress = get_post_meta( $post->ID, '_elysium_gatuadress', true );
  			$stad 		  = get_post_meta( $post->ID, '_elysium_stad', true );
  			$postnr 	  = get_post_meta( $post->ID, '_elysium_postnr', true );
+ 			$region 	  = get_post_meta( $post->ID, '_elysium_region', true );
  			$mobiltlf	  = get_post_meta( $post->ID, '_elysium_mobiltelefon', true );
  			$hemtlf 	  = get_post_meta( $post->ID, '_elysium_hemtelefon', true );
  			$epost  	  = get_post_meta( $post->ID, '_elysium_epost', true );
@@ -194,7 +201,7 @@ if ( ! class_exists( 'Elysium' ) ) {
 									Personnummer
 								</th>
 								<td>
-									<input type="text" name="elysium_personnr" value="<?php echo $personnr; ?>" placeholder="ÅÅMMDD-1234">
+									<input type="text" name="elysium_personnr" value="<?php echo $personnr; ?>" placeholder="ÅÅMMDD-1234" disabled>
 								</td>
 							</tr>
 							<tr>
@@ -233,6 +240,14 @@ if ( ! class_exists( 'Elysium' ) ) {
 							</tr>
 							<tr>
 								<th scope="row">
+									Region
+								</th>
+								<td>
+									<input type="text" name="elysium_region" value="<?php echo $region; ?>" placeholder="Stockholms Län">
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">
 									Medlem i DHR?
 								</th>
 								<td>
@@ -257,9 +272,6 @@ if ( ! class_exists( 'Elysium' ) ) {
       // if our nonce isn't there, or we can't verify it, bail
       if( !isset( $_POST['_elysium_nonce'] ) || !wp_verify_nonce( $_POST['_elysium_nonce'], 'elysium_meta_box_nonce' ) ) return;
 
-      if( isset( $_POST['elysium_personnr'] ) ) {
-        update_post_meta( $post_id, '_elysium_personnr', esc_attr( $_POST['elysium_personnr'] ) );
-      }
       if( isset( $_POST['elysium_gatuadress'] ) ) {
         update_post_meta( $post_id, '_elysium_gatuadress', esc_attr( $_POST['elysium_gatuadress'] ) );
       }
@@ -268,6 +280,13 @@ if ( ! class_exists( 'Elysium' ) ) {
       }
       if( isset( $_POST['elysium_postnr'] ) ) {
         update_post_meta( $post_id, '_elysium_postnr', esc_attr( $_POST['elysium_postnr'] ) );
+
+      	$json = file_get_contents('http://yourmoneyisnowmymoney.com/api/zipcodes/?zipcode='. preg_replace('/\s+/','', $_POST['elysium_postnr']) );
+			  $obj = json_decode($json);
+			  $address = $obj->results[0]->address;
+			  $lan = explode(', ', $address);
+
+	      update_post_meta( $mid, '_elysium_region', esc_attr( $lan[1] ) );
       }
       if( isset( $_POST['elysium_mobiltelefon'] ) ) {
         update_post_meta( $post_id, '_elysium_mobiltelefon', esc_attr( $_POST['elysium_mobiltelefon'] ) );
@@ -282,6 +301,35 @@ if ( ! class_exists( 'Elysium' ) ) {
         update_post_meta( $post_id, '_elysium_dhr_medlem', esc_attr( $_POST['elysium_dhr_medlem'] ) );
       }
  		}
+
+
+ 		/**
+		 * Encrypt string
+		 *
+		 * @param string $value
+		 *
+		 * @return string
+		 */
+
+		public function elysium_encrypt( $value ) {
+			if ( defined( 'SOS_CRYPT_BYPASS' ) && SOS_CRYPT_BYPASS ) {
+				return $value;
+			}
+
+			$key = hash( 'SHA256', SOS_CRYPT_SALT . SOS_CRYPT_UNCLOKER, true );
+
+		 	srand();
+
+			$iv = mcrypt_create_iv( mcrypt_get_iv_size( MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC ), MCRYPT_RAND );
+
+			if ( strlen( $iv_base64 = rtrim( base64_encode( $iv ), '=' ) ) != 22 ) {
+				return false;
+			}
+
+			$encrypted = base64_encode( mcrypt_encrypt( MCRYPT_RIJNDAEL_128, $key, $value. md5( $value ), MCRYPT_MODE_CBC, $iv ) );
+
+			return $iv_base64 . $encrypted;
+		}
 
 
  		/**
@@ -368,8 +416,14 @@ if ( ! class_exists( 'Elysium' ) ) {
 		 */
 
 		function register_elysium_assets() {
-			wp_enqueue_script( 'validation', '//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js', array(), null );
-			wp_enqueue_script( 'elysium_js', home_url() . '/lib/elysium/assets/js/elysium.js', array(), null );
+			wp_enqueue_script( 'validation', '//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js', array(), null, false );
+			wp_enqueue_script( 'elysium_js', home_url() . '/lib/elysium/assets/js/elysium.js', array(), null, true );
+
+			$ajax_args = array(
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+    		'nonce'   => wp_create_nonce( 'elysium_ajax_nonce' )
+			);
+			wp_localize_script( 'elysium_js', 'kruger', $ajax_args, true );
 		}
 
 		/**
@@ -378,6 +432,44 @@ if ( ! class_exists( 'Elysium' ) ) {
 
 		function register_admin_scripts() {
 			wp_enqueue_script( 'lockdown_js', home_url() . '/lib/elysium/assets/js/lockdown.js', array(), null );
+		}
+
+
+		/**
+		 * Elysium ajax requests
+		 */
+
+		function elysium_ajax_with_kruger() {
+			global $wpdb;
+			$personnr = $wpdb->get_col( $wpdb->prepare( "
+			  SELECT DISTINCT pm.meta_value FROM {$wpdb->postmeta} pm
+			  LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+			  WHERE pm.meta_key = '%s'
+			  AND p.post_status = '%s'
+			  AND p.post_type = '%s'
+			  ", '_elysium_personnr', 'private', 'elysium' ) );
+
+			function personnrExist($param, $arr) {
+			  return isset( $_POST[$param] ) && in_array($_POST[$param], $arr);
+			}
+
+			if ( empty( $_POST['personnr'] ) || empty( $_POST['nonce'] ) ) die('empty');
+		  // Verify the nonce
+		  if (! wp_verify_nonce( $_POST['nonce'], 'elysium_ajax_nonce' ) ) die('bad nonce bad');
+
+		  if ( class_exists('Personnummer') ) {
+		  	$validpnr = \Personnummer::valid($_POST['personnr']);
+		  } else {
+		  	$validpnr = 'Validation for Personnumer doesn\'t exist. Check https://github.com/frozzare/php-is-personnummer';
+		  }
+
+			echo json_encode(array(
+				'valid_pnr' => $validpnr,
+			  'pnr_exist' => personnrExist('personnr', $personnr),
+			  'input' => $_POST['personnr']
+			));
+
+			die;
 		}
 
 
@@ -419,7 +511,7 @@ if ( ! class_exists( 'Elysium' ) ) {
  			$membersObj = wp_count_posts($this->tag);
  			$total = $membersObj->draft + $membersObj->private;
 
- 			echo $total;
+ 			return $total;
  		}
 
 
@@ -461,6 +553,29 @@ if ( ! class_exists( 'Elysium' ) ) {
  		function elysium_settings() {
 			include_once dirname( __FILE__ ) . '/views/plugin-options.php';
  		}
+
+
+ 		/**
+     * Add dasboard widget
+ 		 */
+
+ 		function elysium_dashboard() {
+ 			wp_add_dashboard_widget(
+ 				'elysium-dashboard-widget',
+ 				'Medlemsregister',
+ 				array( $this, 'elysium_dashboard_content' ),
+ 				$controll_callback = null
+ 			);
+ 		}
+
+
+ 		/**
+     * Elysium dashboard widget content
+		 */
+
+		function elysium_dashboard_content() {
+			echo '<h3>Antal medlemmar just nu: ' . $this->count_members() . '</h3>';
+		}
 
 	}
 

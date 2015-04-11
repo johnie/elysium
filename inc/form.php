@@ -29,31 +29,38 @@
 
 		$mid = wp_insert_post( $new_member );
 
-		if( isset( $_POST['elysium_personnr'] ) ) {
-      update_post_meta( $mid, '_elysium_personnr', esc_attr( $_POST['elysium_personnr'] ) );
-    }
+		if( isset( $_POST['elysium_personnr'] ) \Personnummer::valid( $_POST['elysium_personnr'] ) ) {
+			update_post_meta( $mid, '_elysium_personnr', esc_attr( $_POST['elysium_personnr'] ) );
+		}
 		if( isset( $_POST['elysium_gatuadress'] ) ) {
-      update_post_meta( $mid, '_elysium_gatuadress', esc_attr( $_POST['elysium_gatuadress'] ) );
-    }
+			update_post_meta( $mid, '_elysium_gatuadress', esc_attr( $_POST['elysium_gatuadress'] ) );
+		}
 		if( isset( $_POST['elysium_stad'] ) ) {
-      update_post_meta( $mid, '_elysium_stad', esc_attr( $_POST['elysium_stad'] ) );
-    }
+			update_post_meta( $mid, '_elysium_stad', esc_attr( $_POST['elysium_stad'] ) );
+		}
 		if( isset( $_POST['elysium_postnr'] ) ) {
-      update_post_meta( $mid, '_elysium_postnr', esc_attr( $_POST['elysium_postnr'] ) );
-    }
+			update_post_meta( $mid, '_elysium_postnr', esc_attr( $_POST['elysium_postnr'] ) );
+
+			$json = file_get_contents('http://yourmoneyisnowmymoney.com/api/zipcodes/?zipcode='. preg_replace('/\s+/','', $_POST['elysium_postnr']) );
+			$obj = json_decode($json);
+			$address = $obj->results[0]->address;
+			$lan = explode(', ', $address);
+
+			update_post_meta( $mid, '_elysium_region', esc_attr( $lan[1] ) );
+		}
 		if( isset( $_POST['elysium_mobiltelefon'] ) ) {
-      update_post_meta( $mid, '_elysium_mobiltelefon', esc_attr( $_POST['elysium_mobiltelefon'] ) );
-    }
+			update_post_meta( $mid, '_elysium_mobiltelefon', esc_attr( $_POST['elysium_mobiltelefon'] ) );
+		}
 		if( isset( $_POST['elysium_hemtelefon'] ) ) {
-      update_post_meta( $mid, '_elysium_hemtelefon', esc_attr( $_POST['elysium_hemtelefon'] ) );
-    }
-		if( isset( $_POST['elysium_epost'] ) ) {
-      update_post_meta( $mid, '_elysium_epost', esc_attr( $_POST['elysium_epost'] ) );
-    }
-    if( isset( $_POST['elysium_dhr_medlem'] ) ) {
-      update_post_meta( $mid, '_elysium_dhr_medlem', esc_attr( 'on' ) );
-    }
-    elysium()->send_mail($_POST['fornamn'], $_POST['efternamn'], $_POST['elysium_epost']);
+			update_post_meta( $mid, '_elysium_hemtelefon', esc_attr( $_POST['elysium_hemtelefon'] ) );
+		}
+		if( isset( $_POST['elysium_epost'] ) && is_email( $_POST['elysium_epost'] ) ) {
+			update_post_meta( $mid, '_elysium_epost', esc_attr( $_POST['elysium_epost'] ) );
+		}
+		if( isset( $_POST['elysium_dhr_medlem'] ) ) {
+			update_post_meta( $mid, '_elysium_dhr_medlem', esc_attr( 'on' ) );
+		}
+		elysium()->send_mail($_POST['fornamn'], $_POST['efternamn'], $_POST['elysium_epost']);
 	}
 ?>
 

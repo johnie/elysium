@@ -1,6 +1,6 @@
 <div class="wrap">
 
-	<h2><?php _e("Medlemsregister", "elysium"); ?> <span style="float: right;"><?php _e("Antal medlemmar: ", "elysium"); elysium()->count_members(); ?></span></h2>
+	<h2><?php _e("Medlemsregister", "elysium"); ?> <span style="float: right;"><?php _e("Antal medlemmar: ", "elysium"); echo elysium()->count_members(); ?></span></h2>
 
 	<form id="elysium_settings" action="" method="post">
 

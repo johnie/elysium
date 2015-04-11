@@ -35,4 +35,20 @@
     }
   });
 
+  $(function () {
+    $.ajax({
+      url: kruger.ajaxurl,
+      method: 'post',
+      cache: false,
+      data: {
+        'action': 'elysium_kruger',
+        'personnr': '920408-2276',
+        'nonce': kruger.nonce,
+      },
+      success: function(res) {
+        console.log(res);
+      }
+    });
+  });
+
 })(window);
