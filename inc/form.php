@@ -29,7 +29,7 @@
 
 		$mid = wp_insert_post( $new_member );
 
-		if( isset( $_POST['elysium_personnr'] ) \Personnummer::valid( $_POST['elysium_personnr'] ) ) {
+		if( isset( $_POST['elysium_personnr'] ) && \Personnummer::valid( $_POST['elysium_personnr'] ) ) {
 			update_post_meta( $mid, '_elysium_personnr', esc_attr( $_POST['elysium_personnr'] ) );
 		}
 		if( isset( $_POST['elysium_gatuadress'] ) ) {
