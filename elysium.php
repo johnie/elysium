@@ -312,11 +312,11 @@ if ( ! class_exists( 'Elysium' ) ) {
 		 */
 
 		public function elysium_encrypt( $value ) {
-			if ( defined( 'SOS_CRYPT_BYPASS' ) && SOS_CRYPT_BYPASS ) {
+			if ( defined( 'ELYSIUM_CRYPT_BYPASS' ) && ELYSIUM_CRYPT_BYPASS ) {
 				return $value;
 			}
 
-			$key = hash( 'SHA256', SOS_CRYPT_SALT . SOS_CRYPT_UNCLOKER, true );
+			$key = hash( 'SHA256', ELYSIUM_CRYPT_SALT . ELYSIUM_CRYPT_UNCLOKER, true );
 
 		 	srand();
 

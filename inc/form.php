@@ -2,11 +2,14 @@
 	$hasError = false;
 	$forNameError = '';
 	$efterNameError = '';
+	$errorString = '';
+	$errors = array();
 
 	if (
 		isset( $_POST['submitted'] ) &&
 		isset( $_POST['post_nonce_field'] ) &&
 		wp_verify_nonce( $_POST['post_nonce_field'], 'post_nonce' ) &&
+		\Personnummer::valid( $_POST['elysium_personnr'] ) &&
 		elysium()->personnr_exist('elysium_personnr')
 	) {
 		if ( trim( $_POST['fornamn'] ) === '' ) {
@@ -30,7 +33,7 @@
 		$mid = wp_insert_post( $new_member );
 
 		if( isset( $_POST['elysium_personnr'] ) && \Personnummer::valid( $_POST['elysium_personnr'] ) ) {
-			update_post_meta( $mid, '_elysium_personnr', esc_attr( $_POST['elysium_personnr'] ) );
+			update_post_meta( $mid, '_elysium_personnr', elysium()->elysium_encrypt($_POST['elysium_personnr']) );
 		}
 		if( isset( $_POST['elysium_gatuadress'] ) ) {
 			update_post_meta( $mid, '_elysium_gatuadress', esc_attr( $_POST['elysium_gatuadress'] ) );
@@ -62,6 +65,18 @@
 		}
 		elysium()->send_mail($_POST['fornamn'], $_POST['efternamn'], $_POST['elysium_epost']);
 	}
+?>
+
+<?php
+if(count($errors) > 0) {
+  $errorString .= '<div class="alert-warning"><ul>';
+  foreach($errors as $error){
+		$errorString .= "<li>$error</li>";
+	}
+	$errorString .= '</ul></div>';
+
+	echo $errorString;
+}
 ?>
 
 <form action="" id="elysium" class="medlem-form" method="POST">
