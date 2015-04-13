@@ -182,7 +182,7 @@ if ( ! class_exists( 'Elysium' ) ) {
 
  		function display_elysium_type( $post ) {
  			$values 		= get_post_custom( $post->ID );
- 			$personnr 	= get_post_meta( $post->ID, '_elysium_personnr', true );
+ 			$personnr 	= $this->elysium_decrypt(get_post_meta( $post->ID, '_elysium_personnr', true ));
  			$gatuadress = get_post_meta( $post->ID, '_elysium_gatuadress', true );
  			$stad 		  = get_post_meta( $post->ID, '_elysium_stad', true );
  			$postnr 	  = get_post_meta( $post->ID, '_elysium_postnr', true );
@@ -312,10 +312,6 @@ if ( ! class_exists( 'Elysium' ) ) {
 		 */
 
 		public function elysium_encrypt( $value ) {
-			if ( defined( 'ELYSIUM_CRYPT_BYPASS' ) && ELYSIUM_CRYPT_BYPASS ) {
-				return $value;
-			}
-
 			$key = hash( 'SHA256', ELYSIUM_CRYPT_SALT . ELYSIUM_CRYPT_UNCLOKER, true );
 
 		 	srand();
@@ -329,6 +325,30 @@ if ( ! class_exists( 'Elysium' ) ) {
 			$encrypted = base64_encode( mcrypt_encrypt( MCRYPT_RIJNDAEL_128, $key, $value. md5( $value ), MCRYPT_MODE_CBC, $iv ) );
 
 			return $iv_base64 . $encrypted;
+		}
+
+
+		/**
+		 * Decrypt string.
+		 *
+		 * @param string $value
+		 *
+		 * @return string
+		 */
+
+		function elysium_decrypt( $value ) {
+			$key    	 = hash( 'SHA256', ELYSIUM_CRYPT_SALT . ELYSIUM_CRYPT_UNCLOKER, true );
+		 	$iv 			 = base64_decode( substr( $value, 0, 22 ) . '==' );
+		 	$value     = substr( $value, 22 );
+		 	$decrypted = rtrim( mcrypt_decrypt( MCRYPT_RIJNDAEL_128, $key, base64_decode( $value ), MCRYPT_MODE_CBC, $iv ), "\0\4" );
+		 	$hash 		 = substr( $decrypted, -32 );
+		 	$decrypted = substr( $decrypted, 0, -32 );
+
+			if ( md5( $decrypted ) != $hash ) {
+				return false;
+			}
+
+			return $decrypted;
 		}
 
 
