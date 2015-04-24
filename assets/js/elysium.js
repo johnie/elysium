@@ -42,7 +42,7 @@
       cache: false,
       data: {
         'action': 'elysium_kruger',
-        'personnr': '920408-2276',
+        'personnr': '510818-9167',
         'nonce': kruger.nonce,
       },
       success: function(res) {

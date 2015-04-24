@@ -51,11 +51,8 @@
 
 			update_post_meta( $mid, '_elysium_region', esc_attr( $lan[1] ) );
 		}
-		if( isset( $_POST['elysium_mobiltelefon'] ) ) {
-			update_post_meta( $mid, '_elysium_mobiltelefon', esc_attr( $_POST['elysium_mobiltelefon'] ) );
-		}
-		if( isset( $_POST['elysium_hemtelefon'] ) ) {
-			update_post_meta( $mid, '_elysium_hemtelefon', esc_attr( $_POST['elysium_hemtelefon'] ) );
+		if( isset( $_POST['elysium_telefon'] ) ) {
+			update_post_meta( $mid, '_elysium_telefon', esc_attr( $_POST['elysium_telefon'] ) );
 		}
 		if( isset( $_POST['elysium_epost'] ) && is_email( $_POST['elysium_epost'] ) ) {
 			update_post_meta( $mid, '_elysium_epost', esc_attr( $_POST['elysium_epost'] ) );
@@ -111,6 +108,21 @@ if(count($errors) > 0) {
 		<?php endif; ?>
 	</fieldset>
 	<fieldset>
+		<legend><?php _e("Kontakt", "elysium"); ?></legend>
+		<div class="medlem-input">
+			<input type="text" class="input__field--isao" name="elysium_telefon" id="telefon" required placeholder="<?php _e("073- 999 13 37", "elysium"); ?>">
+			<label for="telefon" class="input__label--isao" data-content="<?php _e("telefon", "elysium"); ?>">
+				<span class="input__label-content--isao"><?php _e("Telefon", "elysium"); ?></span>
+			</label>
+		</div>
+		<div class="medlem-input">
+			<input type="email" class="input__field--isao" name="elysium_epost" id="epost" required placeholder="<?php _e("john.doe@gmail.com", "elysium"); ?>">
+			<label for="epost" class="input__label--isao" data-content="<?php _e("E-post", "elysium"); ?>">
+				<span class="input__label-content--isao"><?php _e("E-post", "elysium"); ?></span>
+			</label>
+		</div>
+	</fieldset>
+	<fieldset>
 		<legend><?php _e("Adress", "elysium"); ?> <span class="asterisk">*</span></legend>
 		<div class="medlem-input">
 			<input type="text" class="input__field--isao" name="elysium_gatuadress" id="gatuadress" required placeholder="<?php _e("Närgången 1", "elysium"); ?>">
@@ -128,27 +140,6 @@ if(count($errors) > 0) {
 			<input type="text" class="input__field--isao" name="elysium_postnr" id="postnr" required placeholder="<?php _e("417 56", "elysium"); ?>">
 			<label for="postnr" class="input__label--isao" data-content="<?php _e("Postnr", "elysium"); ?>">
 				<span class="input__label-content--isao"><?php _e("Postnr", "elysium"); ?></span>
-			</label>
-		</div>
-	</fieldset>
-	<fieldset>
-		<legend><?php _e("Kontakt", "elysium"); ?></legend>
-		<div class="medlem-input">
-			<input type="text" class="input__field--isao" name="elysium_mobiltelefon" id="mobiltelefon" placeholder="<?php _e("073- 999 13 37", "elysium"); ?>">
-			<label for="mobiltelefon" class="input__label--isao" data-content="<?php _e("Mobiltelefon", "elysium"); ?>">
-				<span class="input__label-content--isao"><?php _e("Mobiltelefon", "elysium"); ?></span>
-			</label>
-		</div>
-		<div class="medlem-input">
-			<input type="text" class="input__field--isao" name="elysium_hemtelefon" id="hemtelefon" placeholder="<?php _e("08 – 685 80 80", "elysium"); ?>">
-			<label for="hemtelefon" class="input__label--isao" data-content="<?php _e("Hemtelefon", "elysium"); ?>">
-				<span class="input__label-content--isao"><?php _e("Hemtelefon", "elysium"); ?></span>
-			</label>
-		</div>
-		<div class="medlem-input">
-			<input type="email" class="input__field--isao" name="elysium_epost" id="epost" placeholder="<?php _e("john.doe@gmail.com", "elysium"); ?>">
-			<label for="epost" class="input__label--isao" data-content="<?php _e("E-post", "elysium"); ?>">
-				<span class="input__label-content--isao"><?php _e("E-post", "elysium"); ?></span>
 			</label>
 		</div>
 	</fieldset>

@@ -187,8 +187,7 @@ if ( ! class_exists( 'Elysium' ) ) {
  			$stad 		  = get_post_meta( $post->ID, '_elysium_stad', true );
  			$postnr 	  = get_post_meta( $post->ID, '_elysium_postnr', true );
  			$region 	  = get_post_meta( $post->ID, '_elysium_region', true );
- 			$mobiltlf	  = get_post_meta( $post->ID, '_elysium_mobiltelefon', true );
- 			$hemtlf 	  = get_post_meta( $post->ID, '_elysium_hemtelefon', true );
+ 			$telefon	  = get_post_meta( $post->ID, '_elysium_telefon', true );
  			$epost  	  = get_post_meta( $post->ID, '_elysium_epost', true );
  			$dhr 			  = get_post_meta( $post->ID, '_elysium_dhr_medlem', true );
  			wp_nonce_field( 'elysium_meta_box_nonce', '_elysium_nonce' );
@@ -206,6 +205,19 @@ if ( ! class_exists( 'Elysium' ) ) {
 							</tr>
 							<tr>
 								<th scope="row">
+									Kontakt
+								</th>
+								<td>
+									<label for="elysium_telefon">telefon</label><br>
+									<input type="text" name="elysium_telefon" value="<?php echo $telefon; ?>" placeholder="070-999 13 37">
+								</td>
+								<td>
+									<label for="elysium_epost">E-post</label><br>
+									<input type="text" name="elysium_epost" value="<?php echo $epost; ?>" placeholder="namn@gmail.com">
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">
 									Adress
 								</th>
 								<td>
@@ -219,23 +231,6 @@ if ( ! class_exists( 'Elysium' ) ) {
 								<td>
 									<label for="elysium_postnr">Postnr</label><br>
 									<input type="text" name="elysium_postnr" value="<?php echo $postnr; ?>" placeholder="12347">
-								</td>
-							</tr>
-							<tr>
-								<th scope="row">
-									Kontakt
-								</th>
-								<td>
-									<label for="elysium_mobiltelefon">Mobiltelefon</label><br>
-									<input type="text" name="elysium_mobiltelefon" value="<?php echo $mobiltlf; ?>" placeholder="070-999 13 37">
-								</td>
-								<td>
-									<label for="elysium_hemtelefon">Hemtelefon</label><br>
-									<input type="text" name="elysium_hemtelefon" value="<?php echo $hemtlf; ?>" placeholder="08 – 685 80 80">
-								</td>
-								<td>
-									<label for="elysium_epost">E-post</label><br>
-									<input type="text" name="elysium_epost" value="<?php echo $epost; ?>" placeholder="namn@gmail.com">
 								</td>
 							</tr>
 							<tr>
@@ -288,11 +283,8 @@ if ( ! class_exists( 'Elysium' ) ) {
 
 	      update_post_meta( $mid, '_elysium_region', esc_attr( $lan[1] ) );
       }
-      if( isset( $_POST['elysium_mobiltelefon'] ) ) {
-        update_post_meta( $post_id, '_elysium_mobiltelefon', esc_attr( $_POST['elysium_mobiltelefon'] ) );
-      }
-      if( isset( $_POST['elysium_hemtelefon'] ) ) {
-        update_post_meta( $post_id, '_elysium_hemtelefon', esc_attr( $_POST['elysium_hemtelefon'] ) );
+      if( isset( $_POST['elysium_telefon'] ) ) {
+        update_post_meta( $post_id, '_elysium_telefon', esc_attr( $_POST['elysium_telefon'] ) );
       }
       if( isset( $_POST['elysium_epost'] ) ) {
         update_post_meta( $post_id, '_elysium_epost', esc_attr( $_POST['elysium_epost'] ) );
@@ -358,7 +350,7 @@ if ( ! class_exists( 'Elysium' ) ) {
 
  		function add_table_columns( $columns ) {
  			$columns['_elysium_epost'] = __( 'E-post', 'elysium' );
- 			$columns['_elysium_mobiltelefon'] = __( 'Mobiltelefon', 'elysium' );
+ 			$columns['_elysium_telefon'] = __( 'telefon', 'elysium' );
  			$columns['_elysium_gatuadress'] = __( 'Adress', 'elysium' );
 
  			return $columns;
@@ -386,7 +378,7 @@ if ( ! class_exists( 'Elysium' ) ) {
 
  		function define_sortable_table_columns( $columns ) {
 	    $columns['_elysium_epost'] = '_elysium_epost';
-	    $columns['_elysium_mobiltelefon'] = '_elysium_mobiltelefon';
+	    $columns['_elysium_telefon'] = '_elysium_telefon';
 
 	    return $columns;
 		}
@@ -405,7 +397,7 @@ if ( ! class_exists( 'Elysium' ) ) {
 
 	    // Check if the orderby parameter matches one of our sortable columns
 	    if ( $vars['orderby'] == '_elysium_epost' OR
-        $vars['orderby'] == '_elysium_mobiltelefon' ) {
+        $vars['orderby'] == '_elysium_telefon' ) {
         // Add orderby meta_value and meta_key parameters to the query
         $vars = array_merge( $vars, array(
             'meta_key' => $vars['orderby'],
