@@ -493,6 +493,14 @@ if ( ! class_exists( 'Elysium' ) ) {
 	    include_once dirname( __FILE__ ) . '/inc/form.php';
 	  }
 
+	  /**
+	   * Markup for front elysium
+	   */
+
+	  public function front_render() {
+	    include_once dirname( __FILE__ ) . '/inc/front_form.php';
+	  }
+
 
 	  /**
  		 * Return if personnr exist
@@ -606,6 +614,13 @@ include_once dirname( __FILE__ ) . '/api.php';
  */
 function elysium_render() {
   elysium()->render();
+}
+
+/**
+ * Function for front elysium
+ */
+function elysium_front_render() {
+  elysium()->front_render();
 }
 
 
